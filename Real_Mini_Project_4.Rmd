@@ -4,7 +4,7 @@ author: "Paige E. Patrick"
 date: "12/11/2017"
 output: html_document
 ---
-hi different
+
 According to Forbes, for every two dollars spent making a film, studios spend another dollar on marketing. Is this money all for nothing? IMDb genre categorization often conflicts with how a movie is marketed. We look at this disparity and its impact on how movies are perceived.
 
 Production companies spend time and effort controlling how a movie is marketed, in order to attract the attention of certain audiences and increase sales for the movie. Because IMDb does not gain profit from movie sales, they do not need to be concerned with appealing to certain audiences. This allows IMDb to be more flexible with how they categorize movies on their website. We will be looking at a couple of the most popular movies over the past sixty years to see if IMDb has categorized them the same way they were marketed when they were first released. 
