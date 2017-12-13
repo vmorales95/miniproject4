@@ -1,13 +1,15 @@
 ---
 title: "Mini_Project_4"
-author: "Paige E. Patrick"
+author: "Paige E. Patrick and Vanessa Morales"
 date: "12/11/2017"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
 ---
 
-According to Forbes, for every two dollars spent making a film, studios spend another dollar on marketing. Is this money all for nothing? IMDb genre categorization often conflicts with how a movie is marketed. We look at this disparity and its impact on how movies are perceived.
 
-Production companies spend time and effort controlling how a movie is marketed, in order to attract the attention of certain audiences and increase sales for the movie. Because IMDb does not gain profit from movie sales, they do not need to be concerned with appealing to certain audiences. This allows IMDb to be more flexible with how they categorize movies on their website. We will be looking at a couple of the most popular movies over the past sixty years to see if IMDb has categorized them the same way they were marketed when they were first released. 
+
+
 
 ```{r, include = FALSE}
 library(mdsr)
@@ -22,7 +24,28 @@ library(dbplyr)
 library(knitr)
 ```
 
-To help determine what movies we would be analyzing over the past 80 years, we found the movie with the highest number of recorded votes, up to the time that the data was collected for SQL. 
+The base data collected from SQL was the same used in the previous mini project.
+
+```{r}
+sql_genre_data <- db %>%
+dbGetQuery("SELECT mi.info, 
+t.title, t.production_year, t.id
+FROM title t
+JOIN movie_info mi ON t.id = mi.movie_id
+WHERE mi.info_type_id = 3
+AND t.kind_id = 1;")
+
+genre_count <- sql_genre_data %>%
+  group_by(production_year, id) %>%
+  summarise(genres_observed = n()) %>%
+  filter(production_year < 2018)
+
+genre_max_and_avg_count <- genre_count %>%
+  group_by(production_year) %>%
+  summarise(max_genre_count = max(genres_observed), average_genre_count = mean(genres_observed))
+```
+
+To help determine what movies we would be analyzing over the past 80 years, in a 20 year interval, we found the movies with the highest number of recorded votes in the years 1940, 1960, 1980, and 2000.
 
 ```{r}
 sql_1940_data <- db %>%
@@ -38,9 +61,7 @@ WHERE kind_id = 1 AND production_year = 1940
   AND mii.info_type_id = 100
   AND mii.info > 100000
   ORDER BY mii.info DESC;")
-```
 
-```{r}
 sql_1960_data <- db %>%
 dbGetQuery("SELECT t.title, t.production_year, 
 mi.movie_id,
@@ -54,9 +75,7 @@ WHERE kind_id = 1 AND production_year = 1960
   AND mii.info_type_id = 100
   AND mii.info > 100000
   ORDER BY mii.info DESC;")
-```
 
-```{r}
 sql_1980_data <- db %>%
 dbGetQuery("SELECT t.title, t.production_year, 
 mi.movie_id,
@@ -70,9 +89,7 @@ WHERE kind_id = 1 AND production_year = 1980
   AND mii.info_type_id = 100
   AND mii.info > 100000
   ORDER BY mii.info DESC;")
-```
 
-```{r}
 sql_2000_data <- db %>%
 dbGetQuery("SELECT t.title, t.production_year, 
 mi.movie_id,
@@ -88,30 +105,18 @@ WHERE kind_id = 1 AND production_year = 2000
   ORDER BY mii.info DESC;")
 ```
 
-```{r}
-sql_genre_data <- db %>%
-dbGetQuery("SELECT mi.info, 
-t.title, t.production_year, t.id
-FROM title t
-JOIN movie_info mi ON t.id = mi.movie_id
-WHERE mi.info_type_id = 3
-AND t.kind_id = 1;")
-```
+Once we found the four movies we were going to use, we needed to compile the movie information we needed for each movie into one table and organize it in a way that collapsed the genre information into one line for each movie.
 
 ```{r}
 movie_genre_info <- sql_genre_data %>%
-  filter(id == 4361365 | id == 4118523 | id == 4260164| id == 3649367)
-```
+  filter(id == 4361365 | id == 4118523 | id == 4260164| id == 3944746)
 
-```{r}
 genres_info <- movie_genre_info %>%
   group_by(production_year, title) %>%
   summarize(Genre = paste(info, collapse = ','))
 ```
 
-
-[We didn't think that graphing the genres for each movie would be more beneficial to the audience than just showing it as is. A graph for information this straight forward seemed counter-productive. We used kable to create mini tables illustrating the genres in each of the movies. However, the caption was not showing up, so we had to create titles for each.] 
-
+We didn't think that graphing the genres for each movie would be help the audience understand the data better, so we decided to present it in a table. 
 
 ```{r warning = FALSE, message = FALSE}
 genres_info %>%
@@ -121,3 +126,95 @@ genres_info %>%
         align = "l",
         width = "2")
 ```
+
+>>>>>>> 45ac986a0a4c1a723510afff6947f72651db8c71
+According to Forbes, for every two dollars spent making a film, studios spend another dollar on marketing. Is this money all for nothing? IMDb genre categorization often conflicts with how a movie is marketed. We look at this disparity and its impact on how movies are perceived.
+<<<<<<<HEAD
+Production companies spend time and effort controlling how a movie is marketed, in order to attract the attention of certain audiences and increase sales for the movie. Because IMDb does not gain profit from movie sales, they do not need to be concerned with appealing to certain audiences. This allows IMDb to be more flexible with how they categorize movies on their website. We will be looking at a couple of the most popular movies over the past sixty years to see if IMDb has categorized them the same way they were marketed when they were first released. 
+
+# Once the horrors of the Holocaust began to be known, Hitler was no longer funny, not at all.
+
+Released in 1940, was "The Great Dictator," Chaplin's first talking picture and the highest-grossing of his career, although it would cause him great difficulties and indirectly lead to his long exile from the United States. (ebert)
+
+America was in WWII from 1939-1945; our involvement in the war had just started when the movie was released.  Chaplin said in his 1964 biography, “Had I known of the actual horrors of the German concentration camps, I could not have made The Great Dictator, I could not have made fun of the homicidal insanity of the Nazis.”
+
+
+Within the first few seconds of the original trailer for the Great Dictator we can see that the movie is a satire.  Chaplin’s comedic chops are used to bring light to the atrocities happening in Germany and yet IMDb doesn’t categorize it as political satire. The Great Dictator is listed in IMDb under the genres comedy, drama, and war which while not inaccurate is a complete oversight of its satirical commentary. 
+
+http://www.tcm.com/mediaroom/video/159742/Great-Dictator-The-Original-Trailer-.html
+
+As it was, the film's mockery of Hitler got it banned in Spain, Italy and neutral Ireland. But in America and elsewhere, it played with an impact that, today, may be hard to imagine. There had never been any fictional character as universally beloved as the Little Tramp, and although Chaplin was technically not playing the Tramp in "The Great Dictator," he looked just like him, this time not in a comic fable but a political satire.
+
+
+Much ado was made over the original marketing for Alfred Hitchcock’s Psycho in 1960:
+
+"The manager of this theatre has been instructed, at the risk of his life, not to admit any persons after the picture starts." 
+(From an article in the Guardian in 1960)
+
+Alfred Hitchcock’s Psycho is listed in IMDb under the genres horror, thriller, and mystery. However, most of Psycho’s original marketing had to do with suspense; after all Hitchcock was coined the Master of Suspense.
+
+The Daily News had this to say in their original 1960 review:
+
+#The obvious thing to say is that Hitch has done it again; that the suspense of his picture builds up slowly but surely to an almost unbearable pitch of excitement. “Psycho” is a murder mystery. It isn’t Hitchcock’s usual terrifier, a shocker of the nervous system; it’s a mind-teaser.
+
+Movie goers in the 60s were noting Psycho’s suspense and psychological terror, yet IMDb doesn’t categorize the movie in that way. We had to search original reviews and marketing materials to get a sense of what audiences at the time were experiencing.
+
+#He Will Join Us, Or Die!
+
+Darth Vader is not mincing words when it comes to the fifth installment of Star Wars: The Empire Strikes Back:
+
+https://www.youtube.com/watch?v=fg9MsitOLh4
+
+The Empire Strikes Back was the highest grossing film of 1980, continuing the success of George Lucas’ series.  It is listed in IMDb as Scifi, Fantasy, Action, and Adventure and we would largely agree.  Star Wars is an established franchise where there is little ambiguity or miscategorization.
+
+One of the original posters tries to highlight the romance between Princess Leia and Han Solo:
+
+![One of the original posters](https://definenormaldotorg.files.wordpress.com/2015/05/empire_strikes_back_old.jpg "Original Poster")
+
+#I can't make new memories
+
+explains Leonard Shelby (Guy Pearce), the vengeance-seeking insurance investigator at the center of ''Memento,'' Christopher Nolan's ingenious new thriller. This is the opening line of Roger Ebert’s original 2001 review of Momento.
+
+Momento was released in 2000 and is listed in IMDb as a mystery and thriller, and we would largely agree with this categorization.
+
+This movie poster gives one of the movies taglines:
+
+![Some Memories Are Best Forgotten](http://1.bp.blogspot.com/-ip7qx2cN4jg/US_cWax2QTI/AAAAAAAAAFI/DCxlIdyCTvU/s1600/Memento-e1332999471355.jpg)
+
+
+Alternate hypothesis: the data recording the genres for movies is not reflected in IMDb accurately. Why does this matter a nay-sayer might say?  Who cares how something is recorded?  We believe it is important because history shouldn’t be left to the whims of whoever is in power.  With data being ubiquitous, the power of accuracy is higher than ever and so leaving information in the hands of an editor’s whim is irresponsible and can have lasting effects for how something is remembered. 
+
+Someone from IMDb in recent years has gone back and recorded the genre information for films that are over 50, 60, 70 years old. This means that how the genres are recorded might not be an accurate representation of how they would have been categorized by someone within the year the film was produced. Alternate hypothesis: the data recording the genres for movies is not reflected in IMDb accurately.
+
+We believe that the functionality of IMDb as a website limits its ability to register movies outside of the more commonly used genres. We found this to be true in that the older movies we analyzed like The Great Dictator and Psycho were lacking in genre categorization while the newer releases were relatively accurate.  
+
+
+
+```{r, warning = FALSE}
+ggplot(genre_max_and_avg_count, aes()) + 
+  geom_line(aes(x = production_year, y = max_genre_count), colour = "green4", size = 1.5) +
+  geom_line(aes(x = production_year, y = average_genre_count), colour = "magenta4", size = 1.5) +
+  ggtitle("Genre Multiplicity in Movies,\nRecorded By IMDb") +
+  scale_x_continuous("Production Year", breaks = c(1880, 1900, 1920, 1940, 1960, 1980, 2000, 2020)) +
+  scale_y_continuous("Number of Genres Recorded", breaks = c(2, 4, 6, 8, 10, 12, 14)) +
+  annotate("text", x = 2010, y = 3, label = "AVERAGE", colour = "magenta4", size = 6, face = "bold") +
+  annotate("text", x = 2010, y = 6, label = "MAXIMUM", colour = "green4", size = 6, face = "bold") +
+  theme(plot.title = element_text(hjust = 0.5, size = 20, face = "bold"), 
+    axis.ticks.length = unit(0.25, "cm"),
+    legend.title = element_text(size = 15), 
+    legend.text = element_text(size = 13),
+    axis.title = element_text(size = 20),
+    axis.text = element_text(size = 15),
+    panel.background = element_rect(fill = "cadetblue2"),
+    panel.grid.major = element_line(colour = "cadetblue3"),
+    panel.grid.minor = element_line(colour = "cadetblue3"))
+```
+
+
+
+
+
+
+
+
+
