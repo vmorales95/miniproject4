@@ -140,12 +140,18 @@ http://www.tcm.com/mediaroom/video/159742/Great-Dictator-The-Original-Trailer-.h
 
 The shock of audiences continues with our next feature. The most voted on and highest rated movie in IMDb for 1960 is Alfred Hitchcock's Psycho. Much ado was made over the original marketing for Alfred Hitchcock’s Psycho in 1960:
 
-"The manager of this theatre has been instructed, at the risk of his life, not to admit any persons after the picture starts." 
+"The manager of this theatre has been instructed, at the risk of his life, not to admit any persons after the picture starts."[^1]
+
 (From an article in the Guardian in 1960)
 
 ![1960s "Psycho" ad in the New York Times](https://i.imgur.com/VNLYLQx.png)
 
-Alfred Hitchcock’s Psycho is listed in IMDb under the genres horror, thriller, and mystery. However, most of Psycho’s original marketing had to do with suspense; after all Hitchcock was coined the Master of Suspense.
+
+The "slasher" genre was started with Psycho and its no-holds-barred knife weilding; this is also not mentioned in the IMDb categorization. Who can forget that famous shower scene?
+
+<img src="https://i.imgur.com/yeoYY5u.gif" width="600" height="400" />
+
+Alfred Hitchcock’s Psycho is listed in IMDb under the genres horror, thriller, and mystery. However, most of Psycho’s original marketing had to do with suspense; after all Hitchcock was coined the Master of Suspense. 
 
 The Daily News had this to say in their original 1960 review:
 
@@ -189,6 +195,7 @@ Movie watching is a classic past-time. From watching a film with your family to 
 
 github
 
+[^1]: Taken from: 
 *footnotes/citations with links
 
 
