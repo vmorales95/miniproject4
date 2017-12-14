@@ -1,14 +1,16 @@
 ---
-title: "Mini_Project_4"
+title: "Data Wars: The Scientist Strikes Back"
 author: "Paige E. Patrick and Vanessa Morales"
 date: "12/11/2017"
 output: 
   html_document:
     code_folding: hide
+    theme: "cosmo"
+    highlight: "tango"
 ---
 
 
-
+An important aspect of data science is collecting data accurately, so that it can be analyzed accurately. With a focus of ethics being highlighted last week, accurate data entry was our focus.
 
 ```{r, include = FALSE}
 library(mdsr)
@@ -21,6 +23,9 @@ library(ggplot2)
 library(tidyverse)
 library(dbplyr)
 library(knitr)
+library(ggthemes)
+library(htmltools)
+library(vembedr)
 ```
 
 The base data collected from SQL was the same used in the previous mini project.
@@ -33,7 +38,9 @@ FROM title t
 JOIN movie_info mi ON t.id = mi.movie_id
 WHERE mi.info_type_id = 3
 AND t.kind_id = 1;")
+```
 
+```{r}
 genre_count <- sql_genre_data %>%
   group_by(production_year, id) %>%
   summarise(genres_observed = n()) %>%
@@ -44,7 +51,7 @@ genre_max_and_avg_count <- genre_count %>%
   summarise(max_genre_count = max(genres_observed), average_genre_count = mean(genres_observed))
 ```
 
-To help determine what movies we would be analyzing over the past 80 years, in a 20 year interval, we found the movies with the highest number of recorded votes in the years 1940, 1960, 1980, and 2000.
+We wanted to us the movies with the highest number of recorded votes in  1940, 1960, 1980, and 2000.
 
 ```{r}
 sql_1940_data <- db %>%
@@ -104,20 +111,37 @@ WHERE kind_id = 1 AND production_year = 2000
   ORDER BY mii.info DESC;")
 ```
 
-Once we found the four movies we were going to use, we needed to compile the movie information we needed for each movie into one table and organize it in a way that collapsed the genre information into one line for each movie.
-
 ```{r}
 movie_genre_info <- sql_genre_data %>%
   filter(id == 4361365 | id == 4118523 | id == 4260164| id == 3944746)
 
 genres_info <- movie_genre_info %>%
   group_by(production_year, title) %>%
-  summarize(Genre = paste(info, collapse = ','))
+  summarize(Genre = paste(info, collapse = ',')) 
+```
+According to the article in the Atlantic, "How Netflix Reversed Engineered Hollywood", Netflix uses 76,847 micro-genres or unique ways to describe types of movies. [^1] With choices like that, it's no surprise that "Netflix and Chill" has become a popular way for young people to pass the time. As platforms like Netflix and Hulu continue to increase their ability to individualistically categorize movies by hyperspecific genres, the relevance of IMDb will further deplenish.   
+
+Because streaming platforms like Netflix, a go to website for movie watchers, offer distinct genres for their movies, IMDb genre categorizations often conflict with the expectations of audiences. We explore these inconsistencies, and a few others, and possible consequences for IMDb, if the problem is not resolved.
+
+Research on IMDb shows that the average number of genres recorded for movies has stayed relatively consistent over the decades. 
+```{r, warning = FALSE}
+ggplot(genre_max_and_avg_count, aes()) + 
+  geom_line(aes(x = production_year, y = average_genre_count), size = 1.5) +
+  ggtitle("Average Number of Genres\nRecorded By IMDb") +
+  scale_x_continuous("Production Year", limits = c(1940,2000), breaks = c(1940, 1960, 1980, 2000)) +
+  scale_y_continuous("Average Recorded", breaks = c(1, 2, 3)) +
+  theme(plot.title = element_text(hjust = 0.5, size = 20, face = "bold"), 
+    axis.ticks.length = unit(0.25, "cm"),
+    legend.title = element_text(size = 15), 
+    legend.text = element_text(size = 13),
+    axis.title = element_text(size = 20),
+    axis.text = element_text(size = 15)) +
+  theme_wsj()
 ```
 
-We didn't think that graphing the genres for each movie would be help the audience understand the data better, so we decided to present it in a table. 
+We aim to see if these numbers are an accurate representation of movie genre categorization.
 
-```{r warning = FALSE, message = FALSE}
+```{r}
 genres_info %>%
   head(4) %>%
   kable(caption = "IMDb Recorded Genres", 
@@ -126,6 +150,7 @@ genres_info %>%
         width = "2")
 ```
 
+<<<<<<< HEAD
 
 "Wanna come over watch a movie and chill?" Everything was going really well for Jessica and David: They were on their third date watching a movie at her place. Things took a turn for the worse when they tried to pick a movie to watch. They thought they were signing up to watch a comedy, but what they got was a drama. Things got awkward.
 
@@ -152,86 +177,53 @@ Within the first few seconds of the original trailer for the Great Dictator we c
 
 
 The shock of audiences continues with our next feature. The most voted on and highest rated movie in IMDb for 1960 is Alfred Hitchcock's Psycho. Much ado was made over the original marketing for Alfred Hitchcock’s Psycho in 1960:
+=======
+*The Great Dictator* was the most popular movie released in 1940, shortly after America became involved in WWII. Even though it was Charlie Chaplin's first talking picture, as well as his highest-grossing film, he admitted in his 1964 biography **“Had I known of the actual horrors of the German concentration camps, I could not have made. The Great Dictator, I could not have made fun of the homicidal insanity of the Nazis.”**[^2]
 
-"The manager of this theatre has been instructed, at the risk of his life, not to admit any persons after the picture starts."[^1]
+```{r}
+embed_url("https://www.youtube.com/watch?v=4sfJxdytYn4")
+```
+>>>>>>> e22f4c4bcdd564ad3d0d742be4e763cb332c8359
 
-(From an article in the Guardian in 1960)
 
-![1960s "Psycho" ad in the New York Times](https://i.imgur.com/VNLYLQx.png)
+Within the first few seconds of a trailer for *The Great Dictator*, we can see that the movie has the characteristics to be a political-satire. Chaplin’s comedic chops are used to bring light to the atrocities happenings in Germany. *The Great Dictator* is listed in IMDb under the genres: comedy, drama, and war. While not entirely inaccurate, seeing how it is a comedy and a war is taking place, these genre pairings don't explain the overall tone of the movie. A categorization like political-satire gives a better description of the film's propaganda and political commentary on the war. 
 
 
-The "slasher" genre was started with Psycho and its no-holds-barred knife weilding; this is also not mentioned in the IMDb categorization. Who can forget that famous shower scene?
+
+Alfred Hitchcock's *Psycho* is the most popular highest ranking movie of 1960 on IMDb, with 8.5 out of 10 stars and over 476,052 votes. **"In the time the genre was created, the slasher film was a huge landmark in film history, starting with the 1960 film Psycho, known to be one of the greatest films of all time and starting a string of unique and great story telling, and new cinematic directions, with a very dark twist that started a revolutionary genre in film history."**[^3]
 
 <img src="https://i.imgur.com/yeoYY5u.gif" width="600" height="400" />
 
-Alfred Hitchcock’s Psycho is listed in IMDb under the genres horror, thriller, and mystery. However, most of Psycho’s original marketing had to do with suspense; after all Hitchcock was coined the Master of Suspense. 
+Even though Hitchcock is credited as a pioneer for the slasher genre, IMDb categorized the movie as: horror, thriller, and mystery. These genres may offer some insight on what viewers can expect to see when watching the movie, but undersells the amount of gore that is present in a slasher. 
 
-The Daily News had this to say in their original 1960 review:
+*Star Wars: Episode V - The Empire Strikes Back* was the highest grossing film of 1980, and continues to exemplify the George Lucas series. There are actually two different IMDb categorizes this movie. In their data set, it is listed as: Action, Adventure, Fantasy, and Sci-Fi. However, on the actual IMDb website, Science Fiction is not included in the list of genres.
 
-#"Hitch has done it again...the suspense builds up slowly but surely to an almost unbearable pitch of excitement. “Psycho” is a murder mystery. It isn’t Hitchcock’s usual terrifier, a shocker of the nervous system; it’s a mind-teaser."
+![Actual Poster from 1980](http://img.moviepostershop.com/the-empire-strikes-back-movie-poster-1980-1010466693.jpg)
 
-Movie goers in the 60s were noting Psycho’s suspense and psychological terror, yet IMDb doesn’t categorize the movie in that way. We had to search original reviews and marketing materials to get a sense of what audiences at the time were experiencing.
+The data in this data set is inaccurate when adding Sci-Fi to the list of genres for this movie. A Huffington Post article does a great job at illustrating the lack of science fiction that exists in the Star Wars Saga. **"Science fiction is in the business of exploring the way that human beings respond to challenges... But what makes a story science fiction is that the challenges are produced by or related to science and technology."**[^4]
 
-As we approach more modern times, the categorization of movies in IMDb becomes more accurate. For our next analysis we look at the ever-popular Star Wars franchise.
+Genres don't seem to be the only thing IMDb struggles with keep accurate though. The newest movie that was looked at was Christopher Nolan's *Momento*, which was the highest ranking movie of 2000 with the highest number of votes recorded in their database. However, it is important to note that the IMDb website had *Gladiator* higher on the list, since both had the score of an 8.5, but *Gladiator* has received a little more than 100,000 more votes than *Momento*. This movie also fails the genre test. IMDb categorizes this film as a mystery and thriller. Although this may seem accurate, these genres fail to capture the mind-bending complexity of this movie. A more fitting genre would be psychological thirller, which is what Netflix has listed on their website.
 
-#"He Will Join Us, Or Die!"
-
-Darth Vader is not mincing words when it comes to the fifth installment of Star Wars: The Empire Strikes Back:
-
-https://www.youtube.com/watch?v=fg9MsitOLh4
-
-The Empire Strikes Back was the highest grossing film of 1980, continuing the success of George Lucas’ series.  It is listed in IMDb as Scifi, Fantasy, Action, and Adventure and we would largely agree.  Star Wars is an established franchise where there is little ambiguity or miscategorization.
-
-In looking at some of the original marketing material we saw a range of stragegies, including this poster that tries to highlight the romance between Princess Leia and Han Solo:
-
-![One of the original posters](https://definenormaldotorg.files.wordpress.com/2015/05/empire_strikes_back_old.jpg "Original Poster")
-
-Thankfully IMDb does not categorize Star Wars as a romance! Audiences knew what they were in for and IMDb correctly categorizes Star Wars. 
-
-Lastly, we look at a movie that left audiences puzzled. Christipher Nolan's Momento received enough votes on IMDb to make it one of the most popular and well liked releases of 2000.
-
-#"I can't make new memories"
-
-explains Leonard Shelby (Guy Pearce), the vengeance-seeking insurance investigator at the center of ''Memento,'' Christopher Nolan's ingenious new thriller. This is the opening line of Roger Ebert’s original 2001 review of Momento.
-
-Momento is listed in IMDb as a mystery and thriller, and we would largely agree with this categorization.
-
-This movie poster gives one of the movies taglines: "Some Memories Are Best Forgotten"
-
-![](http://1.bp.blogspot.com/-ip7qx2cN4jg/US_cWax2QTI/AAAAAAAAAFI/DCxlIdyCTvU/s1600/Memento-e1332999471355.jpg)
-
-An alternate hypothesis: 
-
-We believe that the functionality of IMDb as a website limits its ability to register movies outside of the more commonly used genres. We found this to be true in that the older movies we analyzed like The Great Dictator and Psycho were lacking in genre categorization while the newer releases were relatively accurate.  
-
-Movie watching is a classic past-time. From watching a film with your family to picking just the right movie for that hot date you are excited about. While the categorization of movies isn't necessarily at the forefront of people's minds, it is helpful to look at how things are catagloged and the accuracy of databases such as IMDb and their historical accuracy. 
-
-github
-
-[^1]: Taken from: 
-*footnotes/citations with links
-
-```{r, warning = FALSE}
-ggplot(genre_max_and_avg_count, aes()) + 
-  geom_line(aes(x = production_year, y = average_genre_count), colour = "magenta4", size = 1.5) +
-  ggtitle("Genre Multiplicity in Movies,\nRecorded By IMDb") +
-  scale_x_continuous("Production Year", breaks = c(1880, 1900, 1920, 1940, 1960, 1980, 2000, 2020)) +
-  scale_y_continuous("Number of Genres Recorded", breaks = c(2, 4, 6, 8, 10, 12, 14)) +
-  annotate("text", x = 2010, y = 3, label = "AVERAGE", colour = "magenta4", size = 6, face = "bold") +
-  annotate("text", x = 2010, y = 6, label = "MAXIMUM", colour = "green4", size = 6, face = "bold") +
-  theme(plot.title = element_text(hjust = 0.5, size = 20, face = "bold"), 
-    axis.ticks.length = unit(0.25, "cm"),
-    legend.title = element_text(size = 15), 
-    legend.text = element_text(size = 13),
-    axis.title = element_text(size = 20),
-    axis.text = element_text(size = 15),
-    panel.background = element_rect(fill = "cadetblue2"),
-    panel.grid.major = element_line(colour = "cadetblue3"),
-    panel.grid.minor = element_line(colour = "cadetblue3"))
-```
+![](http://1.bp.blogspot.com/-ip7qx2cN4jg/US_cWax2QTI/AA
 
 
 
+In the defense of IMDb, one alternate reason that could explain why the data is inaccurate and flat out is not reflective of what can be seen on line, is that the database we are using is dated. Maybe IMDb has a whole team of Data Scientists that are updating the data daily, however they don't release that information to the public so frequently. Another hypothesis is that, because our sample size is so small, we can not conclue for sure if our analysis holds an statistical significance.
+
+With any research, it's important to be confident that the data you are working with is accurate. Because of limited time and resources, we not able to inspect the genre categorizations of the hundreds of thousands of movies that are recorded in the IMDb database. However, IMDb does and the should invest in reevaluating how they are categorizing their movies,in order to provide the most accurate description of a movie for the person that might be wanting that information on it. This is not only for the sake of the people using their website, but to help themselves keep up with other platforms, like Netflix, that aren't limiting themselves to only 24 genres. 
+
+
+
+Github.[^5]
+
+
+[^1]:https://www.theatlantic.com/technology/archive/2014/01/how-netflix-reverse-engineered-hollywood/282679/
+[^2]:https://dangerousminds.net/comments/charlie_chaplin_on_the_set_of_the_great_dictator
+[^3]:https://www.theodysseyonline.com/cinema-blood
+[^4]:https://www.huffingtonpost.com/thought-matters/star-wars-vs-science-fiction_b_8813238.html
+[^5]:https://github.com/vmorales95/miniproject4 
+
+ 
 
 
 
